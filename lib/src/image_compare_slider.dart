@@ -56,8 +56,7 @@ class ImageCompareSlider extends StatefulWidget {
     this.handleFollowsPosition = false,
     this.direction = SliderDirection.leftToRight,
     this.photoRadius = BorderRadius.zero,
-  })  : portrait = direction == SliderDirection.topToBottom ||
-            direction == SliderDirection.bottomToTop,
+  })  : portrait = direction == SliderDirection.topToBottom || direction == SliderDirection.bottomToTop,
         assert(
           dividerWidth >= 0,
           'dividerWidth must be greater or equal to 0',
@@ -177,15 +176,11 @@ class _ImageCompareSliderState extends State<ImageCompareSlider> {
     // ignore: cast_nullable_to_non_nullable
     final box = context.findRenderObject() as RenderBox;
     final localPosition = box.globalToLocal(globalPosition);
-    var newPosition = widget.portrait
-        ? localPosition.dy / box.size.height
-        : localPosition.dx / box.size.width;
+    var newPosition = widget.portrait ? localPosition.dy / box.size.height : localPosition.dx / box.size.width;
     newPosition = newPosition.clamp(0.0, 1.0);
 
     if (widget.handleFollowsPosition) {
-      final handlePos = widget.portrait
-          ? localPosition.dx / box.size.width
-          : localPosition.dy / box.size.height;
+      final handlePos = widget.portrait ? localPosition.dx / box.size.width : localPosition.dy / box.size.height;
 
       setState(() => handlePosition = handlePos);
     }
@@ -195,7 +190,7 @@ class _ImageCompareSliderState extends State<ImageCompareSlider> {
 
   Image generateImage(Image image) => Image(
         image: image.image,
-        fit: BoxFit.contain,
+        fit: image.fit,
         /* Gathered properties */
         color: image.color,
         colorBlendMode: image.colorBlendMode,
@@ -211,9 +206,9 @@ class _ImageCompareSliderState extends State<ImageCompareSlider> {
         opacity: image.opacity,
         repeat: image.repeat,
         semanticLabel: image.semanticLabel,
+        width: image.width,
+        height: image.height,
         /* Not used properties */
-        // width: image.width,
-        // height: image.height,
         // centerSlice: image.centerSlice,
       );
 
@@ -221,12 +216,8 @@ class _ImageCompareSliderState extends State<ImageCompareSlider> {
   Widget build(BuildContext context) {
     final generatedFirstImage = generateImage(widget.itemOne);
     final generatedSecondImage = generateImage(widget.itemTwo);
-    final firstImage =
-        widget.itemOneBuilder?.call(generatedFirstImage, context) ??
-            generatedFirstImage;
-    final secondImage =
-        widget.itemTwoBuilder?.call(generatedSecondImage, context) ??
-            generatedSecondImage;
+    final firstImage = widget.itemOneBuilder?.call(generatedFirstImage, context) ?? generatedFirstImage;
+    final secondImage = widget.itemTwoBuilder?.call(generatedSecondImage, context) ?? generatedSecondImage;
 
     final child = ClipRRect(
       borderRadius: widget.photoRadius,
@@ -255,9 +246,7 @@ class _ImageCompareSliderState extends State<ImageCompareSlider> {
                 position: position,
                 color: widget.dividerColor,
                 handleColor: widget.handleColor ?? widget.dividerColor,
-                handleOutlineColor: widget.handleOutlineColor ??
-                    widget.handleColor ??
-                    widget.dividerColor,
+                handleOutlineColor: widget.handleOutlineColor ?? widget.handleColor ?? widget.dividerColor,
                 strokeWidth: widget.dividerWidth,
                 portrait: widget.portrait,
                 fillHandle: widget.fillHandle,
